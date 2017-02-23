@@ -15,7 +15,7 @@ public class Solution {
 		this.cacheSortie = cacheSortie;
 	}
 
-	public Solution(ArrayList<CacheSortie> arrayList) {
+	public Solution(List<CacheSortie> arrayList) {
 		super();
 		this.cacheSortie = arrayList;
 	}

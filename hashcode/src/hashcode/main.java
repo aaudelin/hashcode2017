@@ -1,16 +1,23 @@
 package hashcode;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import input.CacheServer;
 import input.Endpoint;
 import input.First;
 import input.Request;
 import input.Video;
+import output.CacheSortie;
+import output.Solution;
 
 public class main {
 
@@ -31,6 +38,8 @@ public class main {
 		List<Video> videos = new ArrayList<Video>();
 		List<Request> requests = new ArrayList<Request>();
 		
+		First first = new First();
+		
 		//lecture du fichier texte	
 		try{
 			InputStream ips=new FileInputStream(fichier); 
@@ -40,7 +49,7 @@ public class main {
 			int numligne = 0;
 			while ((ligne=br.readLine())!=null){
 				numligne++;
-				First first = new First();
+				
 				if(numligne==1){
 					String[] ligne1 = ligne.split(" ");
 					
@@ -142,12 +151,7 @@ public class main {
 					
 					
 					
-					
-					
 				}
-				
-				
-				
 			
 				
 //				System.out.println(ligne);
@@ -163,7 +167,49 @@ public class main {
 		System.out.println("nb endpoint : " +endpoints.size());
 		System.out.println("nb videos : " +videos.size());
 		System.out.println("nb request : " +requests.size());
+		
+		List<CacheServer> cachesServer = new ArrayList<CacheServer>();
+		for (int i = 0; i < first.getNbCaches(); i++) {
+			CacheServer cacheServer = new CacheServer();
+			cacheServer.setId(i);
+			cacheServer.setCapacityMax(first.getCachesCapacity());
+		}
+		
+			
+			
+		
+		
+		
+		// appel algo
+		List<CacheSortie> cachesSortie = new ArrayList<CacheSortie>();
+		Solution solution = new Solution(cachesSortie);
+		
+		
+		try {
+			File sortie = new File (args[0]+"result.txt");
+			FileWriter fw = new FileWriter (sortie);
+			BufferedWriter bw = new BufferedWriter (fw);
+			PrintWriter fichierSortie = new PrintWriter (bw); 
+			fichierSortie.println(solution.getCacheSortie().size());
+			for (CacheSortie cacheSortie : solution.getCacheSortie()) {
+				String ligne=cacheSortie.getId() + " ";
+				for (Video video : cacheSortie.getListeVideo()) {
+					ligne+= video.getId()+ " ";
+				}
+				
+				fichierSortie.println(ligne);
+			}
+			fichierSortie.close();
+			System.out.println("Le fichier " + sortie + " a été créé!"); 
+		}
+		catch (Exception e){
+			System.out.println(e.toString());
+		}	
 
 	}
+	
+		
+	
+
 
 }
