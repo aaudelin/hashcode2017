@@ -9,6 +9,7 @@ import java.util.List;
 
 import input.Endpoint;
 import input.First;
+import input.Request;
 import input.Video;
 
 public class main {
@@ -20,7 +21,9 @@ public class main {
 		String fichier ="fichiertexte.txt";
 		
 		boolean isEndpoint = true;
-		Endpoint lastEndpoint ;
+		boolean isCache = false;
+		boolean isRequest = false;
+		Endpoint lastEndpoint = null ;
 		
 		//lecture du fichier texte	
 		try{
@@ -60,20 +63,60 @@ public class main {
 				int nbEndpoint = first.getNbEndpoints();
 				int idEndpoint= 0;
 				
+				int idCache = 0;
+				
+				
 				List<Endpoint> endpoints = new ArrayList<Endpoint>();
-				if(numligne>2 && isEndpoint){
+				if(numligne>2){
+					
+					if (isEndpoint) {
 					isEndpoint = false;
 					Endpoint endpoint = new Endpoint();
 					endpoint.setId(idEndpoint);
 					String[] ligneEndpoint = ligne.split(" ");
 					endpoint.setDatacenterLatency(Integer.valueOf(ligneEndpoint[0]));
 					endpoint.setNbCaches(Integer.valueOf(ligneEndpoint[1]));
-					if(endpoint.getNbCaches()==0){
+					idEndpoint++;
+					if(endpoint.getNbCaches()==0 ){
+						isCache= false;
+						if(idEndpoint!= nbEndpoint){
 						isEndpoint = true;
+						}else {
+						isRequest = true;
+						
+						}
+					}else {
+						isCache = true;
+						isRequest = false;
 					}
-					endpoints.add(endpoint);
+					
 					
 					lastEndpoint = endpoint;
+					endpoints.add(lastEndpoint);
+					
+					} else if (isCache){
+						int nbCache = lastEndpoint.getNbCaches();
+						String[] ligneCache = ligne.split(" ");
+						lastEndpoint.getCacheLatency().put(Integer.valueOf(ligneCache[0]), Integer.valueOf(ligneCache[1]));
+						nbCache--;
+						if(nbCache==0){
+							isCache = false;
+							if(nbEndpoint!=endpoints.size()){
+								isEndpoint = true;
+								isRequest = false;
+							}else {
+								isEndpoint = false;
+								isRequest = true;
+							}
+						}else {
+							isCache = true;
+						}
+					} else if (isRequest){
+						Request request= new Request();
+						
+					}
+					
+					
 					
 					
 					
@@ -83,7 +126,12 @@ public class main {
 				
 				
 				
-				if ()
+				
+				
+				
+				
+				
+				
 			
 				
 				System.out.println(ligne);
