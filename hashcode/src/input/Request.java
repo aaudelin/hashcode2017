@@ -5,19 +5,27 @@ import java.util.Map;
 public class Request {
 	
 	Endpoint endpoint;
-	Map<Video, Integer> videosRequest; // video / nombre videos
+	Video video;
+	Integer nbRequest;
 	public Endpoint getEndpoint() {
 		return endpoint;
 	}
 	public void setEndpoint(Endpoint endpoint) {
 		this.endpoint = endpoint;
 	}
-	public Map<Video, Integer> getVideosRequest() {
-		return videosRequest;
+	public Video getVideo() {
+		return video;
 	}
-	public void setVideosRequest(Map<Video, Integer> videosRequest) {
-		this.videosRequest = videosRequest;
+	public void setVideo(Video video) {
+		this.video = video;
 	}
+	public Integer getNbRequest() {
+		return nbRequest;
+	}
+	public void setNbRequest(Integer nbRequest) {
+		this.nbRequest = nbRequest;
+	}
+	
 	
 	
 

@@ -113,6 +113,9 @@ public class main {
 						}
 					} else if (isRequest){
 						Request request= new Request();
+						String[] ligneRequest = ligne.split(" ");
+						int idVideo = Integer.valueOf(ligneRequest[0]);
+						
 						
 					}
 					
