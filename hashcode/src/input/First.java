@@ -7,6 +7,7 @@ public class First {
 	private int nbRequests;
 	private int nbCaches;
 	private int cachesCapacity; // capcity MB
+	
 	public int getNbVideos() {
 		return nbVideos;
 	}
