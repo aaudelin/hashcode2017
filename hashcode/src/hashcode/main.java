@@ -17,13 +17,19 @@ public class main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		String chaine="";
-		String fichier ="fichiertexte.txt";
+		String fichier = args[0];
 		
 		boolean isEndpoint = true;
 		boolean isCache = false;
 		boolean isRequest = false;
 		Endpoint lastEndpoint = null ;
+		
+		int nbCache = 0;
+		int nbEndpoint = 0;
+		
+		List<Endpoint> endpoints = new ArrayList<Endpoint>();
+		List<Video> videos = new ArrayList<Video>();
+		List<Request> requests = new ArrayList<Request>();
 		
 		//lecture du fichier texte	
 		try{
@@ -43,13 +49,14 @@ public class main {
 					first.setNbRequests(Integer.valueOf(ligne1[2]));
 					first.setNbCaches(Integer.valueOf(ligne1[3]));
 					first.setCachesCapacity(Integer.valueOf(ligne1[4]));
+					nbEndpoint = first.getNbEndpoints();
 					
 				}
 				
 				if(numligne==2){
 					int idVideo = 0;
 					String[] ligne2 = ligne.split(" ");
-					List<Video> videos = new ArrayList<Video>();
+					
 					for (String size : ligne2) {
 						Video video = new Video();
 						video.setSize(Integer.valueOf(size));
@@ -60,13 +67,10 @@ public class main {
 					
 				}
 				
-				int nbEndpoint = first.getNbEndpoints();
+				
 				int idEndpoint= 0;
 				
-				int idCache = 0;
 				
-				
-				List<Endpoint> endpoints = new ArrayList<Endpoint>();
 				if(numligne>2){
 					
 					if (isEndpoint) {
@@ -77,9 +81,11 @@ public class main {
 					endpoint.setDatacenterLatency(Integer.valueOf(ligneEndpoint[0]));
 					endpoint.setNbCaches(Integer.valueOf(ligneEndpoint[1]));
 					idEndpoint++;
+					lastEndpoint = endpoint;
+					endpoints.add(lastEndpoint);
 					if(endpoint.getNbCaches()==0 ){
 						isCache= false;
-						if(idEndpoint!= nbEndpoint){
+						if(nbEndpoint != endpoints.size()){
 						isEndpoint = true;
 						}else {
 						isRequest = true;
@@ -89,13 +95,12 @@ public class main {
 						isCache = true;
 						isRequest = false;
 					}
+					nbCache = lastEndpoint.getNbCaches();
 					
 					
-					lastEndpoint = endpoint;
-					endpoints.add(lastEndpoint);
+					
 					
 					} else if (isCache){
-						int nbCache = lastEndpoint.getNbCaches();
 						String[] ligneCache = ligne.split(" ");
 						lastEndpoint.getCacheLatency().put(Integer.valueOf(ligneCache[0]), Integer.valueOf(ligneCache[1]));
 						nbCache--;
@@ -108,6 +113,7 @@ public class main {
 								isEndpoint = false;
 								isRequest = true;
 							}
+							
 						}else {
 							isCache = true;
 						}
@@ -115,7 +121,22 @@ public class main {
 						Request request= new Request();
 						String[] ligneRequest = ligne.split(" ");
 						int idVideo = Integer.valueOf(ligneRequest[0]);
-						
+						int idEnpointRequest = Integer.valueOf(ligneRequest[1]);
+						int nbRequest = Integer.valueOf(ligneRequest[2]);
+						for (Video video : videos) {
+							if(video.getId()==idVideo){
+								request.setVideo(video);
+								break;
+							}
+						}
+						for (Endpoint endpoint : endpoints) {
+							if(endpoint.getId()==idEnpointRequest){
+								request.setEndpoint(endpoint);
+								break;
+							}
+						}
+						request.setNbRequest(nbRequest);
+						requests.add(request);
 						
 					}
 					
@@ -127,24 +148,21 @@ public class main {
 				
 				
 				
-				
-				
-				
-				
-				
-				
-				
-				
 			
 				
-				System.out.println(ligne);
-				chaine+=ligne+"\n";
+//				System.out.println(ligne);
+//				chaine+=ligne+"\n";
 			}
 			br.close(); 
 		}		
 		catch (Exception e){
+			e.printStackTrace();
 			System.out.println(e.toString());
 		}
+		
+		System.out.println("nb endpoint : " +endpoints.size());
+		System.out.println("nb videos : " +videos.size());
+		System.out.println("nb request : " +requests.size());
 
 	}
 
