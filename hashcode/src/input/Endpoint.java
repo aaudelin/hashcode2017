@@ -1,5 +1,6 @@
 package input;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Endpoint {
@@ -21,6 +22,9 @@ public class Endpoint {
 		this.datacenterLatency = datacenterLatency;
 	}
 	public Map<Integer, Integer> getCacheLatency() {
+		if(cacheLatency==null){
+			cacheLatency = new HashMap<Integer, Integer>();
+		}
 		return cacheLatency;
 	}
 	public void setCacheLatency(Map<Integer, Integer> cacheLatency) {
