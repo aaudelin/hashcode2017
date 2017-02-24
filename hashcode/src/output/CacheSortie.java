@@ -7,8 +7,9 @@ import java.util.List;
 public class CacheSortie {
 
 	int id;
+
 	
-	List<Video> listeVideo;
+	List<Integer> listeIdVideo;
 
 	public int getId() {
 		return id;
@@ -18,18 +19,18 @@ public class CacheSortie {
 		this.id = id;
 	}
 
-	public List<Video> getListeVideo() {
-		return listeVideo;
+	public List<Integer> getListeVideo() {
+		return listeIdVideo;
 	}
 
-	public void setListeVideo(List<Video> listeVideo) {
-		this.listeVideo = listeVideo;
+	public void setListeVideo(List<Integer> listeVideo) {
+		this.listeIdVideo = listeVideo;
 	}
 
-	public CacheSortie(int id, List<Video> listeVideo) {
+	public CacheSortie(int id, List<Integer> listeIdVideo) {
 		super();
 		this.id = id;
-		this.listeVideo = listeVideo;
+		this.listeIdVideo = listeIdVideo;
 	}
 	
 }

@@ -33,6 +33,7 @@ public class main {
 		
 		int nbCache = 0;
 		int nbEndpoint = 0;
+		int idEndpoint= 0;
 		
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
 		List<Video> videos = new ArrayList<Video>();
@@ -77,13 +78,14 @@ public class main {
 				}
 				
 				
-				int idEndpoint= 0;
+				
 				
 				
 				if(numligne>2){
 					
 					if (isEndpoint) {
 					isEndpoint = false;
+					
 					Endpoint endpoint = new Endpoint();
 					endpoint.setId(idEndpoint);
 					String[] ligneEndpoint = ligne.split(" ");
@@ -173,16 +175,17 @@ public class main {
 			CacheServer cacheServer = new CacheServer();
 			cacheServer.setId(i);
 			cacheServer.setCapacityMax(first.getCachesCapacity());
+			cachesServer.add(cacheServer);
 		}
 		
+			resolution resolution= new resolution(cachesServer, endpoints, videos, requests);
 			
 			
 		
 		
 		
 		// appel algo
-		List<CacheSortie> cachesSortie = new ArrayList<CacheSortie>();
-		Solution solution = new Solution(cachesSortie);
+		Solution solution = resolution.solvePbEmpirique();
 		
 		
 		try {
@@ -193,8 +196,8 @@ public class main {
 			fichierSortie.println(solution.getCacheSortie().size());
 			for (CacheSortie cacheSortie : solution.getCacheSortie()) {
 				String ligne=cacheSortie.getId() + " ";
-				for (Video video : cacheSortie.getListeVideo()) {
-					ligne+= video.getId()+ " ";
+				for (int videoId : cacheSortie.getListeVideo()) {
+					ligne+= videoId+ " ";
 				}
 				
 				fichierSortie.println(ligne);
