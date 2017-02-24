@@ -61,7 +61,7 @@ public class resolution {
 			
 			int idCache= SelectBestCache(bestRequest,cacheServeur,solution);
 			
-			if (idCache>0){
+			if (idCache>=0){
 			updateSolution (idCache, bestRequest.getVideo(),solution);
 			
 			}
@@ -112,12 +112,25 @@ public class resolution {
 
 
 	private void updateSolution(int idCache, Video video2, Solution solution) {
-		if(!(solution.getCacheSortie().get(idCache).getListeVideo().contains(video2))){
+		if(!cacheContientVideo(solution.getCacheSortie().get(idCache).getListeVideo(),video2)){
 		solution.getCacheSortie().get(idCache).getListeVideo().add(video2.getId());
 		cacheServeur.get(idCache).setCapacityMax(cacheServeur.get(idCache).getCapacityMax()-video2.getSize());
 		}
 		
 		
+	}
+	
+	
+	private boolean cacheContientVideo(List<Integer> lVideo, Video video){
+		boolean res= false;
+		
+		for( int v : lVideo){
+			if(v==video.getId()){
+				res=true;
+			}
+		}
+		
+		return res;
 	}
 	
 	private int Score (Request requete){
@@ -135,7 +148,9 @@ public class resolution {
 		// TODO Auto-generated method stub
 		int idBest=-1;
 		int latenceBest=0;
+		try{
 		int dataLatency = bestRequest.getEndpoint().getDatacenterLatency();
+		
 		Map<Integer,Integer> cacheLatencyMap = bestRequest.getEndpoint().getCacheLatency();
 		
 			
@@ -143,13 +158,17 @@ public class resolution {
 		
 				for (Integer id : cacheLatencyMap.keySet()) {
 				if(((dataLatency-cacheLatencyMap.get(id))>latenceBest&&bestRequest.getVideo().getSize()<lcacheServeurTmp.get(id).getCapacityMax())){
-					
+					latenceBest=dataLatency-cacheLatencyMap.get(id);
 					idBest=id;
 				}
 				
 			}			
-		
+		}
+		catch (Exception e){
+			return idBest;	
+		}
 		return idBest;
+		
 	}
 
 
@@ -161,12 +180,12 @@ public class resolution {
 		Request res = null;
 		Request resTmp =null;
 		
-		int score=0;
+		double score=0;
 		
 		for (int i=0;i<requestTmp.size();i++){
 			
 			resTmp=requestTmp.get(i);
-			int tmpScore=resTmp.getNbRequest()*resTmp.getEndpoint().getDatacenterLatency()/resTmp.getVideo().getSize();
+			double tmpScore=(double)resTmp.getNbRequest()*resTmp.getEndpoint().getDatacenterLatency()/(double)resTmp.getVideo().getSize();
 			if (tmpScore>score){
 				score=tmpScore;
 				res=resTmp;
